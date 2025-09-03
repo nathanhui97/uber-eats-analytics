@@ -1,0 +1,20 @@
+{
+  "name": "uber-eats-analytics-extension",
+  "version": "1.0.0",
+  "description": "Browser extension for Uber Eats Analytics",
+  "scripts": {
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "typescript": "^5.3.2"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.251",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "ts-loader": "^9.5.1",
+    "copy-webpack-plugin": "^11.0.0"
+  }
+}

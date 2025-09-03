@@ -1,0 +1,21 @@
+{
+  "name": "uber-eats-analytics",
+  "version": "1.0.0",
+  "description": "Lightweight analytics tool for restaurants using Uber Eats Manager portal",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:extension\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:extension": "cd extension && npm run dev",
+    "build": "npm run build:backend && npm run build:extension",
+    "build:backend": "cd backend && npm run build",
+    "build:extension": "cd extension && npm run build",
+    "install:all": "npm install && cd backend && npm install && cd ../extension && npm install"
+  },
+  "keywords": ["uber-eats", "analytics", "restaurant", "browser-extension"],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
