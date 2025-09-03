@@ -30,7 +30,10 @@ class PopupController {
 
   private isUberEatsManager(url?: string): boolean {
     if (!url) return false;
-    return url.includes('manager.ubereats.com') || url.includes('partners.ubereats.com');
+    return url.includes('manager.ubereats.com') || 
+           url.includes('partners.ubereats.com') ||
+           url.includes('localhost:8080') ||
+           url.includes('127.0.0.1:8080');
   }
 
   private setupEventListeners() {
@@ -48,6 +51,18 @@ class PopupController {
 
     document.getElementById('clearDataBtn')?.addEventListener('click', () => {
       this.clearData();
+    });
+
+    document.getElementById('debugSelectorsBtn')?.addEventListener('click', () => {
+      this.debugSelectors();
+    });
+
+    document.getElementById('startAutoNavBtn')?.addEventListener('click', () => {
+      this.startAutoNavigation();
+    });
+
+    document.getElementById('stopAutoNavBtn')?.addEventListener('click', () => {
+      this.stopAutoNavigation();
     });
   }
 
@@ -169,7 +184,7 @@ class PopupController {
     this.updateDataSummary();
 
     // Enable/disable generate button
-    generateBtn!.disabled = this.capturedData.length === 0;
+    (generateBtn as HTMLButtonElement)!.disabled = this.capturedData.length === 0;
   }
 
   private updateDataSummary() {
@@ -245,12 +260,102 @@ class PopupController {
     }, 5000);
   }
 
+  private async debugSelectors() {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab.id) {
+        await chrome.tabs.sendMessage(tab.id, { action: 'debugSelectors' });
+        this.showSuccess('Debug info logged to console. Open DevTools (F12) to view.');
+      }
+    } catch (error) {
+      console.error('Error debugging selectors:', error);
+      this.showError('Error debugging selectors. Make sure you\'re on an Uber Eats Manager page.');
+    }
+  }
+
+  private async startAutoNavigation() {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab.id) return;
+
+      await chrome.tabs.sendMessage(tab.id, { action: 'startAutoNavigation' });
+      
+      // Update UI
+      (document.getElementById('startAutoNavBtn') as HTMLButtonElement)!.style.display = 'none';
+      (document.getElementById('stopAutoNavBtn') as HTMLButtonElement)!.style.display = 'block';
+      (document.getElementById('navigationProgress') as HTMLElement)!.style.display = 'block';
+      
+      this.showSuccess('Auto-navigation started! The extension will automatically navigate through all Uber Eats Manager pages.');
+      
+      // Start progress monitoring
+      this.monitorNavigationProgress();
+      
+    } catch (error) {
+      console.error('Error starting auto-navigation:', error);
+      this.showError('Error starting auto-navigation. Please refresh the page and try again.');
+    }
+  }
+
+  private async stopAutoNavigation() {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab.id) return;
+
+      await chrome.tabs.sendMessage(tab.id, { action: 'stopAutoNavigation' });
+      
+      // Update UI
+      (document.getElementById('startAutoNavBtn') as HTMLButtonElement)!.style.display = 'block';
+      (document.getElementById('stopAutoNavBtn') as HTMLButtonElement)!.style.display = 'none';
+      (document.getElementById('navigationProgress') as HTMLElement)!.style.display = 'none';
+      
+      this.showSuccess('Auto-navigation stopped.');
+      
+    } catch (error) {
+      console.error('Error stopping auto-navigation:', error);
+      this.showError('Error stopping auto-navigation.');
+    }
+  }
+
+  private async monitorNavigationProgress() {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab.id) return;
+
+      const response = await chrome.tabs.sendMessage(tab.id, { action: 'getNavigationStatus' });
+      
+      if (response.isNavigating) {
+        const progress = response.progress;
+        const progressFill = document.getElementById('progressFill') as HTMLElement;
+        const progressText = document.getElementById('progressText') as HTMLElement;
+        
+        const percentage = (progress.current / progress.total) * 100;
+        progressFill.style.width = `${percentage}%`;
+        progressText.textContent = `Page ${progress.current} of ${progress.total} - ${progress.currentPage}`;
+        
+        // Continue monitoring
+        setTimeout(() => this.monitorNavigationProgress(), 1000);
+      } else {
+        // Navigation completed
+        (document.getElementById('startAutoNavBtn') as HTMLButtonElement)!.style.display = 'block';
+        (document.getElementById('stopAutoNavBtn') as HTMLButtonElement)!.style.display = 'none';
+        (document.getElementById('navigationProgress') as HTMLElement)!.style.display = 'none';
+        
+        this.showSuccess('Auto-navigation completed! All data has been captured.');
+        await this.loadCurrentState();
+        this.updateUI();
+      }
+      
+    } catch (error) {
+      console.error('Error monitoring navigation progress:', error);
+    }
+  }
+
   private showLoading(show: boolean) {
     const loadingEl = document.getElementById('loadingMessage');
     const generateBtn = document.getElementById('generateReportBtn');
     
     loadingEl!.style.display = show ? 'block' : 'none';
-    generateBtn!.disabled = show;
+    (generateBtn as HTMLButtonElement)!.disabled = show;
   }
 }
 

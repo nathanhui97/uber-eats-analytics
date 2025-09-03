@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Extension Icons</title>
+</head>
+<body>
+    <canvas id="canvas" width="128" height="128" style="border: 1px solid #ccc;"></canvas>
+    <br>
+    <button onclick="createIcons()">Create Icons</button>
+    <button onclick="downloadIcon(16)">Download 16x16</button>
+    <button onclick="downloadIcon(32)">Download 32x32</button>
+    <button onclick="downloadIcon(48)">Download 48x48</button>
+    <button onclick="downloadIcon(128)">Download 128x128</button>
+
+    <script>
+        function createIcons() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, 128, 128);
+            
+            // Background circle
+            ctx.fillStyle = '#00D4AA';
+            ctx.beginPath();
+            ctx.arc(64, 64, 60, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // White text "UE"
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('UE', 64, 64);
+            
+            // Analytics symbol (chart)
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(20, 100);
+            ctx.lineTo(40, 80);
+            ctx.lineTo(60, 90);
+            ctx.lineTo(80, 70);
+            ctx.lineTo(100, 75);
+            ctx.stroke();
+        }
+        
+        function downloadIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Background circle
+            ctx.fillStyle = '#00D4AA';
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2 - 4, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // White text "UE"
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size/4}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('UE', size/2, size/2);
+            
+            // Analytics symbol (chart) for larger icons
+            if (size >= 32) {
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = Math.max(1, size/32);
+                ctx.beginPath();
+                ctx.moveTo(size * 0.2, size * 0.8);
+                ctx.lineTo(size * 0.35, size * 0.65);
+                ctx.lineTo(size * 0.5, size * 0.7);
+                ctx.lineTo(size * 0.65, size * 0.55);
+                ctx.lineTo(size * 0.8, size * 0.6);
+                ctx.stroke();
+            }
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `icon${size}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // Create icons on load
+        window.onload = createIcons;
+    </script>
+</body>
+</html>

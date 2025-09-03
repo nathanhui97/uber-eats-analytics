@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "Uber Eats Analytics",
+  "version": "1.0.0",
+  "description": "Lightweight analytics tool for restaurants using Uber Eats Manager portal",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  
+  "host_permissions": [
+    "*://manager.ubereats.com/*",
+    "*://partners.ubereats.com/*",
+    "*://localhost:*/*",
+    "file://*/*"
+  ],
+  
+  "background": {
+    "service_worker": "dist/background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "*://manager.ubereats.com/*",
+        "*://partners.ubereats.com/*",
+        "*://localhost:*/*",
+        "file://*/*mock-uber-eats.html"
+      ],
+      "js": ["dist/contentScript.js"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Uber Eats Analytics",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["dist/*"],
+      "matches": ["*://manager.ubereats.com/*", "*://partners.ubereats.com/*"]
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Extension Testing Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #00D4AA 0%, #00b894 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00D4AA;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .test-button {
+            background: #00D4AA;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            background: #00b894;
+            transform: translateY(-2px);
+        }
+        .test-button.secondary {
+            background: #6c757d;
+        }
+        .test-button.secondary:hover {
+            background: #5a6268;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .step {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .step-number {
+            background: #00D4AA;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Uber Eats Analytics</h1>
+            <p>Extension Testing Dashboard</p>
+        </div>
+        
+        <div class="content">
+            <div class="test-section">
+                <h3>🚀 Quick Start Testing</h3>
+                <p>Follow these steps to test your extension locally before using it on real Uber Eats Manager pages.</p>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Load Extension in Chrome</strong>
+                    <p>Go to <code>chrome://extensions/</code> → Enable Developer mode → Load unpacked → Select <code>extension/dist</code> folder</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Open Mock Test Page</strong>
+                    <p>Open <code>extension/test-pages/mock-uber-eats.html</code> in Chrome to test data capture</p>
+                    <button class="test-button" onclick="openMockPage()">📄 Open Mock Uber Eats Page</button>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Test Extension</strong>
+                    <p>Click the extension icon → Start Capturing Data → Check console for logs</p>
+                    <button class="test-button" onclick="testBackend()">🔗 Test Backend Connection</button>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>🔧 Backend Status</h3>
+                <div id="backend-status" class="status info">Checking backend status...</div>
+                <button class="test-button" onclick="testBackend()">🔄 Refresh Status</button>
+                <button class="test-button secondary" onclick="testReportGeneration()">📊 Test Report Generation</button>
+            </div>
+
+            <div class="test-section">
+                <h3>📋 Testing Checklist</h3>
+                <div id="test-results">
+                    <div class="status info">Run tests to see results...</div>
+                </div>
+                <button class="test-button" onclick="runAllTests()">🧪 Run All Tests</button>
+            </div>
+
+            <div class="test-section">
+                <h3>📚 Resources</h3>
+                <p>Useful files and guides for testing:</p>
+                <ul>
+                    <li><strong>Mock Test Page:</strong> <code>extension/test-pages/mock-uber-eats.html</code></li>
+                    <li><strong>Local Testing Guide:</strong> <code>LOCAL_TESTING_GUIDE.md</code></li>
+                    <li><strong>Selector Research Guide:</strong> <code>SELECTOR_RESEARCH_GUIDE.md</code></li>
+                    <li><strong>Selector Research Tool:</strong> <code>extension/selector-research-tool.html</code></li>
+                </ul>
+            </div>
+
+            <div class="test-section">
+                <h3>🎯 Expected Test Results</h3>
+                <div class="code-block">
+// When testing, you should see console logs like:
+🎯 Uber Eats Analytics: Found totalSales = 2847.5 using selector: [data-testid="total-sales"]
+📊 Uber Eats Analytics: Found 4 sales metrics: ["totalSales", "totalOrders", "averageBasket", "netDeliveryGross"]
+🔍 Uber Eats Analytics: Debug Mode - Analyzing page structure...
+📋 Found 15 elements with data-testid: [...]
+💰 Found 8 sales-related elements: [...]
+💵 Found 12 elements with $: [...]
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test backend connection
+        async function testBackend() {
+            const statusDiv = document.getElementById('backend-status');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = 'Testing backend connection...';
+            
+            try {
+                const response = await fetch('http://localhost:3001/health');
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `✅ Backend is running! Version: ${data.version}`;
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = '❌ Backend responded but status is not healthy';
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Backend is not running. Start it with: cd backend && npm start';
+            }
+        }
+
+        // Test report generation
+        async function testReportGeneration() {
+            const statusDiv = document.getElementById('backend-status');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = 'Testing report generation...';
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/test-data', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ Report generation test successful!';
+                    console.log('Test report data:', data.report);
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = '❌ Report generation failed';
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Report generation test failed: ' + error.message;
+            }
+        }
+
+        // Open mock page
+        function openMockPage() {
+            window.open('extension/test-pages/mock-uber-eats.html', '_blank');
+        }
+
+        // Run all tests
+        async function runAllTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="status info">Running tests...</div>';
+            
+            const tests = [];
+            
+            // Test 1: Backend connection
+            try {
+                const response = await fetch('http://localhost:3001/health');
+                const data = await response.json();
+                tests.push({
+                    name: 'Backend Connection',
+                    status: data.status === 'healthy' ? 'success' : 'error',
+                    message: data.status === 'healthy' ? 'Backend is running' : 'Backend not healthy'
+                });
+            } catch (error) {
+                tests.push({
+                    name: 'Backend Connection',
+                    status: 'error',
+                    message: 'Backend not running'
+                });
+            }
+            
+            // Test 2: Report generation
+            try {
+                const response = await fetch('http://localhost:3001/api/test-data', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                tests.push({
+                    name: 'Report Generation',
+                    status: data.success ? 'success' : 'error',
+                    message: data.success ? 'Report generation works' : 'Report generation failed'
+                });
+            } catch (error) {
+                tests.push({
+                    name: 'Report Generation',
+                    status: 'error',
+                    message: 'Report generation failed'
+                });
+            }
+            
+            // Display results
+            let html = '';
+            tests.forEach(test => {
+                const statusClass = test.status === 'success' ? 'success' : 'error';
+                const icon = test.status === 'success' ? '✅' : '❌';
+                html += `<div class="status ${statusClass}">${icon} ${test.name}: ${test.message}</div>`;
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        // Auto-test backend on page load
+        window.addEventListener('load', () => {
+            testBackend();
+        });
+    </script>
+</body>
+</html>

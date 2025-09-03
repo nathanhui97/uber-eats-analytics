@@ -148,7 +148,7 @@ router.post('/test-data', async (req, res) => {
         {
           date: '2024-01-01',
           promotionName: '20% Off First Order',
-          promotionType: 'discount',
+          promotionType: 'discount' as const,
           promotionSpend: 50,
           promotionSales: 200,
           promotionOrders: 8,

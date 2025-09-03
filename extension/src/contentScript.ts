@@ -37,11 +37,40 @@ class UberEatsContentScript {
           this.generateReport(request.email);
           sendResponse({ success: true });
           break;
+        case 'debugSelectors':
+          this.dataExtractor.debugSelectors();
+          sendResponse({ success: true });
+          break;
+        case 'startAutoNavigation':
+          this.startAutoNavigation();
+          sendResponse({ success: true });
+          break;
+        case 'stopAutoNavigation':
+          this.stopAutoNavigation();
+          sendResponse({ success: true });
+          break;
+        case 'getNavigationStatus':
+          sendResponse({ 
+            isNavigating: this.dataExtractor.isAutoNavigating(),
+            progress: this.dataExtractor.getNavigationProgress()
+          });
+          break;
       }
     });
 
     // Auto-capture data when page loads or changes
     this.setupAutoCapture();
+    
+    // Listen for hash changes (for mock page navigation)
+    window.addEventListener('hashchange', () => {
+      if (this.isCapturing) {
+        this.captureCurrentPage();
+      }
+      // Check if auto-navigation is running
+      if (this.dataExtractor.isAutoNavigating()) {
+        this.dataExtractor.onPageLoad();
+      }
+    });
     
     // Add visual indicator when capturing
     this.addCaptureIndicator();
@@ -205,6 +234,21 @@ class UberEatsContentScript {
     // Update data count
     const dataCount = this.capturedData.length;
     indicator.innerHTML = `UE<br>Analytics<br><small>${dataCount}</small>`;
+  }
+
+  // Auto-navigation methods
+  private startAutoNavigation() {
+    console.log('🚀 Starting auto-navigation...');
+    this.isCapturing = true;
+    this.dataExtractor.startAutoNavigation();
+    this.updateCaptureIndicator();
+  }
+
+  private stopAutoNavigation() {
+    console.log('⏹️ Stopping auto-navigation...');
+    this.isCapturing = false;
+    this.dataExtractor.stopAutoNavigation();
+    this.updateCaptureIndicator();
   }
 }
 

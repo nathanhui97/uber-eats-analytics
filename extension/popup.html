@@ -185,6 +185,33 @@
       font-size: 12px;
     }
     
+    .navigation-progress {
+      margin-top: 15px;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: #00D4AA;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+    
+    .progress-text {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+    
     .error {
       background: #f8d7da;
       color: #721c24;
@@ -257,10 +284,24 @@
   <button class="button primary" id="startCaptureBtn">Start Capturing Data</button>
   <button class="button secondary" id="stopCaptureBtn" style="display: none;">Stop Capturing</button>
   
+  <div class="section">
+    <h3>🚀 Auto-Navigation</h3>
+    <p class="section-description">Automatically navigate through all Uber Eats Manager pages to capture comprehensive data.</p>
+    <button class="button primary" id="startAutoNavBtn">🚀 Start Auto-Navigation</button>
+    <button class="button danger" id="stopAutoNavBtn" style="display: none;">⏹️ Stop Auto-Navigation</button>
+    <div class="navigation-progress" id="navigationProgress" style="display: none;">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">Page 1 of 5</div>
+    </div>
+  </div>
+  
   <input type="email" class="email-input" id="emailInput" placeholder="Enter email for report delivery (optional)">
   
   <button class="button primary" id="generateReportBtn" disabled>Generate Report</button>
   <button class="button danger" id="clearDataBtn">Clear All Data</button>
+  <button class="button secondary" id="debugSelectorsBtn">🔍 Debug Selectors</button>
   
   <div class="loading" id="loadingMessage">Generating report...</div>
   

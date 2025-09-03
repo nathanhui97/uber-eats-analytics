@@ -258,7 +258,7 @@ export class ReportService {
   private async sendEmailReport(report: AnalyticsReport, email: string, reportId: string): Promise<boolean> {
     try {
       // Create transporter (you'll need to configure this with your email service)
-      const transporter = nodemailer.createTransporter({
+      const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.SMTP_PORT || '587'),
         secure: false,
@@ -270,7 +270,7 @@ export class ReportService {
 
       const htmlContent = this.generateEmailHTML(report);
 
-      const mailOptions = {
+      const mailOptions: any = {
         from: process.env.SMTP_FROM || 'noreply@uber-eats-analytics.com',
         to: email,
         subject: `Uber Eats Analytics Report - ${report.restaurantName}`,
